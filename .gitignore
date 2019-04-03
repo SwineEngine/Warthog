@@ -31,3 +31,5 @@ build
 *.iml
 out
 gen
+
+example_project
