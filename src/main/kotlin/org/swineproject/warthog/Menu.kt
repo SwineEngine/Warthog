@@ -1,6 +1,7 @@
 package org.swineproject.warthog
 
 import jep.Jep
+import jep.JepConfig
 import jep.python.PyObject
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.*
@@ -25,6 +26,7 @@ class Menu(decorations: Decorations) {
                     if (directory != null) {
                         ProjectFile.new(directory)
 
+                        // TODO: Use a templating engine instead like Velocity or StringTemplate
                         val game = this::class.java.getResource("/scripts/game.py").readText()
                                 .replace(">title", "\"Title\"")
                                 .replace(">size", "(800, 600)")
@@ -53,9 +55,9 @@ class Menu(decorations: Decorations) {
                         Globals.python!!.runScript("$directory/assets/scenes/main_scene.py")
 
                         Globals.hierarchy!!.list.removeAll()
-                        for (i in Globals.getAllObjects()) {
-                            Globals.hierarchy!!.list.add(i.toString())
-                        }
+                        Globals.syncAllObjects()
+                        // TODO: Check if the object doesn't have a parent, if it does, append it as a child item
+                        Globals.objectList.forEach { Globals.hierarchy!!.list.add(Globals.python!!.getValue("$it.name").toString()) }
                     }
                 }
             }

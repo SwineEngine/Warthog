@@ -30,6 +30,9 @@ dependencies {
     // Used for spell-checking in the text editor
     compile 'org.languagetool:languagetool-core:4.5'
     compile 'org.languagetool:language-all:4.5'
+
+    compile 'org.lwjgl.osgi:org.lwjgl.opengl:3.2.0'
+    compile "org.joml:joml:1.9.12"
 }
 
 compileKotlin {

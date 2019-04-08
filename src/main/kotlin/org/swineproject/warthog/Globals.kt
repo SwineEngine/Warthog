@@ -1,6 +1,7 @@
 package org.swineproject.warthog
 
 import jep.Jep
+import jep.python.PyObject
 import org.swineproject.warthog.hierarchy.Hierarchy
 import org.swineproject.warthog.inspector.Inspector
 import org.swineproject.warthog.project.Project
@@ -13,20 +14,27 @@ object Globals {
 
     var python: Jep? = null
 
+    val objectList = mutableListOf<String>()
+
     // Widgets
     var hierarchy: Hierarchy? = null
     var scene: Scene? = null
     var inspector: Inspector? = null
     var project: Project? = null
 
-    fun getAllObjects(): List<Any> {
-        val objectList = mutableListOf<Any>()
+    fun syncAllObjects() {
+        objectList.clear()
 
-        for (i in python!!.getValue("locals()") as HashMap<String, Any>) {
-            // TODO: Check if the object is a swine.GameObject before adding it
+        // It's just easier to compare the objects from Python
+        python!!.eval("import swine")
+        python!!.eval("objs = []")
+        python!!.eval("""|for k, v in list(locals().items()):
+                         |    if type(v) == swine.GameObject:
+                         |        objs.append(k)
+        """.trimMargin())
+
+        for (i in python!!.getValue("objs") as ArrayList<String>) {
             objectList.add(i)
         }
-
-        return objectList
     }
 }
